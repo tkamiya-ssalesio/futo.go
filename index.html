@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FUDO.go | 1次不等式トレーニング</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  
+  <main class="container">
+    <div id="feedback-toast" class="feedback"></div>
+
+    <div class="apple-card">
+      <header id="app-header" class="hidden">
+        <h1>FUDO.go</h1>
+        <button id="back-to-title-btn" class="secondary-btn">🏠 タイトル</button>
+      </header>
+
+      <!-- タイトル画面 -->
+      <div id="title-screen" class="title-screen">
+        <div class="title-logo">FUDO.go</div>
+        <p class="title-subtitle">1次不等式の「解」をマスターしよう！</p>
+        
+        <div class="menu-buttons">
+          <button class="menu-btn" data-category="single">
+            <span class="icon">🔰</span>
+            <div>
+              <div>1次不等式の基本</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">基本解法と負の係数（逆転）をマスター</small>
+            </div>
+          </button>
+          
+          <button class="menu-btn" data-category="advanced">
+            <span class="icon">⚔️</span>
+            <div>
+              <div>連立・応用不等式</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">連立不等式と $A < B < C$ 型を攻略</small>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 問題エリア -->
+      <div id="problem-area" class="problem-area hidden">
+        <div class="stats-bar">
+          <div id="mode-name">基本モード</div>
+          <div id="score-display">Score: <span id="score-val" style="color:var(--apple-indigo);">0</span></div>
+        </div>
+
+        <div class="equation-container">
+          <p style="font-size:14px; color:var(--apple-text-secondary); margin-bottom:8px;">次の不等式を解きなさい</p>
+          <div id="equation-display" class="equation-display"></div>
+        </div>
+
+        <!-- インタラクティブ数直線 -->
+        <div id="number-line-section">
+          <p style="font-size:13px; color:var(--apple-text-secondary); text-align:center;">数直線の範囲を選ぼう（タップで白丸/黒丸切替）</p>
+          <div class="number-line-container" id="number-line-container">
+            <svg class="number-line-svg" id="number-line-svg" viewBox="0 0 500 100">
+              <!-- 数直線の軸 -->
+              <line x1="20" y1="60" x2="480" y2="60" stroke="#C7C7CC" stroke-width="2" />
+              <path d="M475 55 L485 60 L475 65 Z" fill="#C7C7CC" /> <!-- 矢印 -->
+              
+              <!-- 目盛りはJSで生成 -->
+              <g id="ticks-group"></g>
+              
+              <!-- 解の範囲表示 -->
+              <line id="solution-line" class="interval-line" x1="0" y1="60" x2="0" y2="60" stroke="rgba(88, 86, 214, 0.4)" stroke-width="8" />
+              <circle id="endpoint-1" class="endpoint-circle" cx="0" cy="60" r="8" fill="white" stroke="var(--apple-indigo)" stroke-width="3" />
+              <circle id="endpoint-2" class="endpoint-circle hidden" cx="0" cy="60" r="8" fill="white" stroke="var(--apple-indigo)" stroke-width="3" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="input-area">
+          <div id="inputs-wrapper">
+            <!-- 単一不等式の入力 -->
+            <div id="single-input-row" class="inequality-input-row">
+              <span style="font-family:serif; font-style:italic;">x</span>
+              <select id="sign-input" class="sign-select">
+                <option value="<">&lt;</option>
+                <option value=">">&gt;</option>
+                <option value="<=">&le;</option>
+                <option value=">=">&ge;</option>
+              </select>
+              <input type="number" id="val-input" class="val-input" step="any" placeholder="?">
+            </div>
+            
+            <!-- 連立不等式の入力（必要に応じて表示） -->
+            <div id="compound-input-row" class="inequality-input-row hidden">
+              <input type="number" id="val-input-left" class="val-input" step="any">
+              <select id="sign-input-left" class="sign-select">
+                <option value="<">&lt;</option>
+                <option value="<=">&le;</option>
+              </select>
+              <span style="font-family:serif; font-style:italic;">x</span>
+              <select id="sign-input-right" class="sign-select">
+                <option value="<">&lt;</option>
+                <option value="<=">&le;</option>
+              </select>
+              <input type="number" id="val-input-right" class="val-input" step="any">
+            </div>
+          </div>
+
+          <button id="check-btn" class="primary-btn" style="width:100%; margin-top:10px;">判定する</button>
+        </div>
+      </div>
+      
+      <footer class="app-footer">
+        &copy; 2026 Toshiki Kamiya @ Shizuoka Salesio | FUDO.go v1.0.0
+      </footer>
+    </div>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
