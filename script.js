@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = 'single';
     let currentProblem = null;
     let score = 0;
-    let isEndpoint1Filled = false;
-    let isEndpoint2Filled = false;
 
     // --- DOM Elements ---
     const titleScreen = document.getElementById('title-screen');
@@ -18,15 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const modeName = document.getElementById('mode-name');
     const backToTitleBtn = document.getElementById('back-to-title-btn');
     const feedbackToast = document.getElementById('feedback-toast');
+    const formatSelect = document.getElementById('format-select');
+    const inputsWrapper = document.getElementById('inputs-wrapper');
+    const singleInputRow = document.getElementById('single-input-row');
+    const compoundInputRow = document.getElementById('compound-input-row');
 
-    // Number Line Elements
-    const ticksGroup = document.getElementById('ticks-group');
-    const solutionLine = document.getElementById('solution-line');
-    const endpoint1 = document.getElementById('endpoint-1');
-    const endpoint2 = document.getElementById('endpoint-2');
+    const formatSelectorWrapper = document.querySelector('.format-selector-wrapper');
 
-    // --- Initialization ---
-    initNumberLine();
 
     // --- Event Listeners ---
     document.querySelectorAll('.menu-btn').forEach(btn => {
@@ -44,14 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     checkBtn.addEventListener('click', checkAnswer);
 
-    endpoint1.addEventListener('click', () => {
-        isEndpoint1Filled = !isEndpoint1Filled;
-        updateEndpointStyle(endpoint1, isEndpoint1Filled);
-    });
 
-    endpoint2.addEventListener('click', () => {
-        isEndpoint2Filled = !isEndpoint2Filled;
-        updateEndpointStyle(endpoint2, isEndpoint2Filled);
+    formatSelect.addEventListener('change', () => {
+        const format = formatSelect.value;
+        inputsWrapper.classList.remove('hidden');
+        
+        if (format === 'single') {
+            singleInputRow.classList.remove('hidden');
+            compoundInputRow.classList.add('hidden');
+        } else if (format === 'compound') {
+            singleInputRow.classList.add('hidden');
+            compoundInputRow.classList.remove('hidden');
+        }
     });
 
     // --- Functions ---
@@ -75,10 +75,21 @@ document.addEventListener('DOMContentLoaded', () => {
         valInput.value = '';
         document.getElementById('val-input-left').value = '';
         document.getElementById('val-input-right').value = '';
-        isEndpoint1Filled = false;
-        isEndpoint2Filled = false;
-        updateEndpointStyle(endpoint1, false);
-        updateEndpointStyle(endpoint2, false);
+        
+        // Reset and handle format selection visibility
+        if (currentCategory === 'single') {
+            formatSelectorWrapper.classList.add('hidden');
+            inputsWrapper.classList.remove('hidden');
+            singleInputRow.classList.remove('hidden');
+            compoundInputRow.classList.add('hidden');
+            formatSelect.value = 'single';
+        } else {
+            formatSelectorWrapper.classList.remove('hidden');
+            formatSelect.value = 'none';
+            inputsWrapper.classList.add('hidden');
+            singleInputRow.classList.add('hidden');
+            compoundInputRow.classList.add('hidden');
+        }
         
         const signs = ['<', '>', '<=', '>='];
         
@@ -134,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         renderEquation();
-        updateNumberLine();
     }
 
     function renderEquation() {
@@ -156,11 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
             throwOnError: false,
             displayMode: true
         });
-
-        // Switch input rows
-        const isSingle = currentProblem.type === 'single';
-        document.getElementById('single-input-row').classList.toggle('hidden', !isSingle);
-        document.getElementById('compound-input-row').classList.toggle('hidden', isSingle);
     }
 
     function formatInequality(a, b, c, sign) {
@@ -171,7 +176,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkAnswer() {
+        const selectedFormat = formatSelect.value;
+        if (selectedFormat === 'none') {
+            return showFeedback('解答の形式を選択してください', 'error');
+        }
+
         if (currentProblem.type === 'single') {
+            if (selectedFormat !== 'single') {
+                return showFeedback('解答の形式が違います（x ≶ a 型を選んでください）', 'error');
+            }
+
             const userVal = parseFloat(valInput.value);
             const userSign = signInput.value;
             if (isNaN(userVal)) return showFeedback('値を入力してください', 'error');
@@ -182,13 +196,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 correctSign = flip[currentProblem.sign];
             }
 
-            if (userSign === correctSign && userVal === currentProblem.x && isEndpoint1Filled === correctSign.includes('=')) {
+            if (userSign === correctSign && userVal === currentProblem.x) {
                 success();
             } else {
                 fail(userSign !== correctSign && currentProblem.a < 0);
             }
         } else {
             // System or Compound
+            if (selectedFormat !== 'compound') {
+                return showFeedback('解答の形式が違います（a ≶ x ≶ b 型を選んでください）', 'error');
+            }
+
             const vLeft = parseFloat(document.getElementById('val-input-left').value);
             const vRight = parseFloat(document.getElementById('val-input-right').value);
             const sLeft = document.getElementById('sign-input-left').value;
@@ -197,9 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isNaN(vLeft) || isNaN(vRight)) return showFeedback('値を入力してください', 'error');
 
             const isCorrect = (vLeft === currentProblem.x1 && vRight === currentProblem.x2 && 
-                               sLeft === currentProblem.sign1 && sRight === currentProblem.sign2 &&
-                               isEndpoint1Filled === currentProblem.sign1.includes('=') &&
-                               isEndpoint2Filled === currentProblem.sign2.includes('='));
+                               sLeft === currentProblem.sign1 && sRight === currentProblem.sign2);
 
             if (isCorrect) success();
             else fail();
@@ -228,60 +244,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // --- Number Line Logic ---
-    function initNumberLine() {
-        ticksGroup.innerHTML = '';
-        for (let i = -10; i <= 10; i++) {
-            const x = 250 + i * 20;
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.setAttribute('x1', x);
-            line.setAttribute('y1', 55);
-            line.setAttribute('x2', x);
-            line.setAttribute('y2', 65);
-            line.setAttribute('stroke', '#C7C7CC');
-            line.setAttribute('stroke-width', '1');
-            ticksGroup.appendChild(line);
-
-            if (i % 5 === 0) {
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', x);
-                text.setAttribute('y', 80);
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('class', 'tick-label');
-                text.textContent = i;
-                ticksGroup.appendChild(text);
-            }
-        }
-    }
-
-    function updateNumberLine() {
-        const xPos1 = 250 + (currentProblem.type === 'single' ? currentProblem.x : currentProblem.x1) * 20;
-        endpoint1.setAttribute('cx', xPos1);
-        
-        if (currentProblem.type === 'single') {
-            endpoint2.classList.add('hidden');
-            let actualSign = currentProblem.sign;
-            if (currentProblem.a < 0) {
-                const flip = {'<': '>', '>': '<', '<=': '>=', '>=': '<='};
-                actualSign = flip[currentProblem.sign];
-            }
-            if (actualSign.includes('>')) {
-                solutionLine.setAttribute('x1', xPos1);
-                solutionLine.setAttribute('x2', 480);
-            } else {
-                solutionLine.setAttribute('x1', 20);
-                solutionLine.setAttribute('x2', xPos1);
-            }
-        } else {
-            endpoint2.classList.remove('hidden');
-            const xPos2 = 250 + currentProblem.x2 * 20;
-            endpoint2.setAttribute('cx', xPos2);
-            solutionLine.setAttribute('x1', xPos1);
-            solutionLine.setAttribute('x2', xPos2);
-        }
-    }
-
-    function updateEndpointStyle(el, filled) {
-        el.setAttribute('fill', filled ? 'var(--apple-indigo)' : 'white');
-    }
 });
