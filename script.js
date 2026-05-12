@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputsWrapper = document.getElementById('inputs-wrapper');
     const singleInputRow = document.getElementById('single-input-row');
     const compoundInputRow = document.getElementById('compound-input-row');
-
+    const changeFormatBtn = document.getElementById('change-format-btn');
+    const selectedFormatText = document.getElementById('selected-format-text');
+    const formatDisplayRow = document.getElementById('format-display-row');
     const formatSelectorWrapper = document.querySelector('.format-selector-wrapper');
 
 
@@ -43,15 +45,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     formatSelect.addEventListener('change', () => {
         const format = formatSelect.value;
+        if (format === 'none') return;
+
+        formatSelectorWrapper.classList.add('hidden');
         inputsWrapper.classList.remove('hidden');
+        formatDisplayRow.classList.remove('hidden');
         
         if (format === 'single') {
+            selectedFormatText.textContent = '解答形式: x ≶ a';
             singleInputRow.classList.remove('hidden');
             compoundInputRow.classList.add('hidden');
         } else if (format === 'compound') {
+            selectedFormatText.textContent = '解答形式: a ≶ x ≶ b';
             singleInputRow.classList.add('hidden');
             compoundInputRow.classList.remove('hidden');
         }
+    });
+
+    changeFormatBtn.addEventListener('click', () => {
+        formatSelect.value = 'none';
+        formatSelectorWrapper.classList.remove('hidden');
+        inputsWrapper.classList.add('hidden');
+        singleInputRow.classList.add('hidden');
+        compoundInputRow.classList.add('hidden');
     });
 
     // --- Functions ---
@@ -80,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentCategory === 'single') {
             formatSelectorWrapper.classList.add('hidden');
             inputsWrapper.classList.remove('hidden');
+            formatDisplayRow.classList.add('hidden'); // Hide "change format" for single category
             singleInputRow.classList.remove('hidden');
             compoundInputRow.classList.add('hidden');
             formatSelect.value = 'single';
@@ -87,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formatSelectorWrapper.classList.remove('hidden');
             formatSelect.value = 'none';
             inputsWrapper.classList.add('hidden');
+            formatDisplayRow.classList.remove('hidden');
             singleInputRow.classList.add('hidden');
             compoundInputRow.classList.add('hidden');
         }
