@@ -20,6 +20,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.hidden {
+  display: none !important;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -73,6 +77,142 @@ h1 {
   animation: fadeIn 0.5s ease-out;
 }
 .title-screen.hidden { display: none; }
+
+/* --- Intro Screen --- */
+.intro-screen {
+  animation: fadeIn 0.5s ease-out;
+}
+.intro-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.intro-step {
+  background: var(--apple-input-bg);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.step-badge {
+  background: var(--apple-indigo);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+.intro-step h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+.intro-step p {
+  font-size: 14px;
+  color: var(--apple-text-primary);
+  line-height: 1.5;
+}
+
+/* --- Tutorial Screen --- */
+.tutorial-screen {
+  animation: fadeIn 0.5s ease-out;
+}
+.tutorial-slide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.3s ease-out;
+}
+.tutorial-slide p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--apple-text-primary);
+}
+.tutorial-slide .highlight {
+  color: var(--apple-indigo);
+  font-weight: 700;
+}
+.tutorial-slide .warning {
+  color: var(--apple-red);
+  font-weight: 700;
+}
+.visual-box {
+  background: #F2F2F7;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+.visual-box .math {
+  font-size: 28px;
+  margin: 8px 0;
+}
+.number-line-box {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  margin-top: 20px;
+}
+.nl-line {
+  position: absolute;
+  top: 30px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: #C7C7CC;
+}
+.nl-point {
+  position: absolute;
+  top: 26px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--apple-text-primary);
+  transform: translateX(-5px);
+}
+.nl-point.filled {
+  background: var(--apple-text-primary);
+}
+.nl-label {
+  position: absolute;
+  top: 45px;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 600;
+}
+.nl-arrow {
+  position: absolute;
+  top: 10px;
+  height: 20px;
+  border-top: 2px solid var(--apple-indigo);
+}
+.nl-arrow.right {
+  border-right: 2px solid var(--apple-indigo);
+  border-top-right-radius: 8px;
+}
+.nl-arrow.left {
+  border-left: 2px solid var(--apple-indigo);
+  border-top-left-radius: 8px;
+}
+.nl-overlap {
+  position: absolute;
+  top: 10px;
+  height: 20px;
+  background: rgba(88, 86, 214, 0.2);
+}
 
 .title-logo {
   font-size: 42px;
@@ -172,36 +312,40 @@ h1 {
   gap: 20px;
   width: 100%;
 }
-.format-selector-wrapper {
+
+/* --- Pattern Selector --- */
+.pattern-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  max-width: 300px;
+  animation: fadeIn 0.3s ease;
 }
-.format-select {
+.pattern-selector.hidden { display: none; }
+
+.pattern-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 2px solid var(--apple-input-bg);
-  background: var(--apple-card-bg);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--apple-text-primary);
+}
+.pattern-btn {
+  background-color: var(--apple-input-bg);
+  color: var(--apple-indigo);
+  border: none;
+  padding: 20px 0;
+  flex: 1;
+  min-width: 140px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 700;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 20px;
 }
-.format-select:focus {
-  outline: none;
-  border-color: var(--apple-indigo);
-  box-shadow: 0 0 0 4px rgba(88, 86, 214, 0.1);
-}
-.format-select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.pattern-btn:hover { background-color: #E5E5EA; transform: translateY(-2px); }
+.pattern-btn:active { transform: scale(0.95); }
 
 #inputs-wrapper.hidden { display: none; }
 
@@ -235,10 +379,18 @@ h1 {
 
 .inequality-input-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* 上端合わせにしてマージンで微調整 */
+  justify-content: center;
   gap: 12px;
   font-size: 24px;
   font-weight: 700;
+  padding-top: 10px;
+}
+
+/* x や不等号の記号を、入力ボックス(高さ60px)の中心に合わせる */
+.inequality-input-row > span,
+.inequality-input-row .sign-select {
+  margin-top: 10px;
 }
 .sign-select {
   background: var(--apple-input-bg);
@@ -269,6 +421,52 @@ h1 {
   outline: none;
   background: white;
   box-shadow: 0 0 0 3px var(--apple-indigo);
+}
+
+/* --- Hybrid Fraction Input --- */
+.value-input-container {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+}
+
+.fraction-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.fraction-input .val-input {
+  width: 60px;
+  height: 44px;
+  font-size: 20px;
+  border-radius: 10px;
+}
+.frac-line {
+  width: 100%;
+  height: 2px;
+  background: var(--apple-text-primary);
+  border-radius: 1px;
+}
+
+.toggle-frac-btn {
+  background: transparent;
+  color: var(--apple-indigo);
+  border: 1px solid var(--apple-indigo);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.toggle-frac-btn:hover {
+  background: var(--apple-indigo);
+  color: white;
+}
+.toggle-frac-btn.active {
+  background: var(--apple-text-secondary);
 }
 
 .system-inputs {

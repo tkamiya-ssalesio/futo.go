@@ -27,16 +27,59 @@
         <div class="title-logo">FUTO.go</div>
         <p class="title-subtitle">1次不等式の「解」をマスターしよう！</p>
         
-        <div class="menu-buttons">
-          <button class="menu-btn" data-category="single">
-            <span class="icon">🔰</span>
+        <div class="menu-buttons" style="margin-top: 20px;">
+          <button id="go-to-tutorial-btn" class="menu-btn">
+            <span class="icon" style="background: #EBF5FF; color: #007AFF;">📖</span>
             <div>
-              <div>1次不等式の基本</div>
-              <small style="color:var(--apple-text-secondary); font-weight:400;">基本解法と負の係数（逆転）をマスター</small>
+              <div>解き方を学ぶ</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">視覚的な解説で基本を理解する</small>
             </div>
           </button>
           
-          <button class="menu-btn" data-category="advanced">
+          <button id="go-to-training-btn" class="menu-btn">
+            <span class="icon" style="background: #F0FDF4; color: #34C759;">✏️</span>
+            <div>
+              <div>トレーニング</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">問題を解いて実力をチェック</small>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 解説選択画面 -->
+      <div id="tutorial-select-screen" class="title-screen hidden">
+        <h2 style="text-align:center; margin-bottom:24px;">何を学びますか？</h2>
+        <div class="menu-buttons">
+          <button class="menu-btn tutorial-btn" data-tutorial="single">
+            <span class="icon">1️⃣</span>
+            <div>
+              <div>1次不等式の解き方</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">基本の解き方と「マイナスの罠」</small>
+            </div>
+          </button>
+          <button class="menu-btn tutorial-btn" data-tutorial="system">
+            <span class="icon">🔗</span>
+            <div>
+              <div>連立不等式の解き方</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">数直線を使った共通範囲の見つけ方</small>
+            </div>
+          </button>
+        </div>
+        <button class="back-to-top-btn secondary-btn" style="margin-top:20px; width:100%; border:none;">◀ 戻る</button>
+      </div>
+
+      <!-- トレーニング選択画面 -->
+      <div id="training-select-screen" class="title-screen hidden">
+        <h2 style="text-align:center; margin-bottom:24px;">どのレベルに挑戦しますか？</h2>
+        <div class="menu-buttons">
+          <button class="menu-btn category-btn" data-category="single">
+            <span class="icon">🔰</span>
+            <div>
+              <div>1次不等式の基本</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">基本解法と負の係数をマスター</small>
+            </div>
+          </button>
+          <button class="menu-btn category-btn" data-category="advanced">
             <span class="icon">⚔️</span>
             <div>
               <div>連立・応用不等式</div>
@@ -44,13 +87,119 @@
             </div>
           </button>
         </div>
+        <button class="back-to-top-btn secondary-btn" style="margin-top:20px; width:100%; border:none;">◀ 戻る</button>
+      </div>
+
+      <!-- トレーニング モード選択画面 -->
+      <div id="training-mode-select-screen" class="title-screen hidden">
+        <h2 style="text-align:center; margin-bottom:24px;">遊び方を選択</h2>
+        <div class="menu-buttons">
+          <button class="menu-btn game-mode-btn" data-mode="practice">
+            <span class="icon">♾️</span>
+            <div>
+              <div>練習モード</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">自分のペースでじっくり解く</small>
+            </div>
+          </button>
+          <button class="menu-btn game-mode-btn" data-mode="timeAttack">
+            <span class="icon">⏱️</span>
+            <div>
+              <div>タイムアタック</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">10問クリアまでの時間を競う</small>
+            </div>
+          </button>
+          <button class="menu-btn game-mode-btn" data-mode="survival">
+            <span class="icon">❤️</span>
+            <div>
+              <div>サバイバル</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">ライフ3つで何問解けるか挑戦</small>
+            </div>
+          </button>
+          <button class="menu-btn game-mode-btn" data-mode="scoreAttack">
+            <span class="icon">🔥</span>
+            <div>
+              <div>スコアアタック</div>
+              <small style="color:var(--apple-text-secondary); font-weight:400;">60秒間でハイスコアを狙う</small>
+            </div>
+          </button>
+        </div>
+        <button id="back-to-training-select-btn" class="secondary-btn" style="margin-top:20px; width:100%; border:none;">◀ 戻る</button>
+      </div>
+
+      <!-- 解説（チュートリアル）画面 -->
+      <div id="tutorial-screen" class="tutorial-screen hidden">
+        <h2 id="tutorial-title" style="text-align:center; margin-bottom:20px;">1次不等式の解き方</h2>
+        
+        <!-- チュートリアルのスライドコンテンツ -->
+        <div id="tutorial-content" class="tutorial-content">
+          <!-- JSで動的に中身を生成します -->
+        </div>
+
+        <div class="tutorial-nav" style="display:flex; gap:12px; margin-top:24px;">
+          <button id="tutorial-prev-btn" class="secondary-btn" style="flex:1;" disabled>◀ 戻る</button>
+          <button id="tutorial-next-btn" class="primary-btn" style="flex:2; padding:12px;">次へ ▶</button>
+        </div>
+        <button id="back-to-title-from-tutorial" class="secondary-btn" style="margin-top:16px; width:100%; border:none;">タイトルへ戻る</button>
+      </div>
+
+      <!-- イントロダクション画面 -->
+      <div id="intro-screen" class="intro-screen hidden">
+        <h2 style="text-align:center; margin-bottom:20px;">使い方ガイド</h2>
+        
+        <div class="intro-steps">
+          <div class="intro-step">
+            <div class="step-header">
+              <span class="step-badge">STEP 1</span>
+              <h3>形式を選ぶ</h3>
+            </div>
+            <p>問題の種類に合わせて，解答の形式をボタンで選択します．</p>
+            <div class="mock-ui" style="display:flex; gap:8px; margin-top:12px; justify-content:center; background:white; padding:12px; border-radius:12px; border:1px solid #E5E5EA;">
+              <div class="pattern-btn" style="pointer-events:none; padding:8px 16px; font-size:14px;"><span class="math">x \lesseqgtr a</span></div>
+              <div class="pattern-btn" style="pointer-events:none; padding:8px 16px; font-size:14px;"><span class="math">a \lesseqgtr x \lesseqgtr b</span></div>
+            </div>
+          </div>
+
+          <div class="intro-step">
+            <div class="step-header">
+              <span class="step-badge">STEP 2</span>
+              <h3>値を入力する</h3>
+            </div>
+            <p>ボックスに数値を入力します．分数の場合は<strong>「分数」ボタン</strong>を押して入力します．</p>
+            <div class="mock-ui" style="display:flex; align-items:center; gap:16px; margin-top:12px; justify-content:center; background:white; padding:12px; border-radius:12px; border:1px solid #E5E5EA;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="math">x < </span>
+                <div class="fraction-input" style="pointer-events:none; width:60px;">
+                  <div class="val-input" style="text-align:center; padding:4px; font-size:14px;">-3</div>
+                  <div class="frac-line"></div>
+                  <div class="val-input" style="text-align:center; padding:4px; font-size:14px;">4</div>
+                </div>
+              </div>
+              <div style="font-size:12px; color:var(--apple-text-secondary); text-align:left;">
+                👆負の数は<br>分子にマイナス
+              </div>
+            </div>
+          </div>
+
+          <div class="intro-step">
+            <div class="step-header">
+              <span class="step-badge">STEP 3</span>
+              <h3>判定する</h3>
+            </div>
+            <p><strong>「判定する」ボタン</strong>を押して答え合わせ！</p>
+            <div class="mock-ui" style="display:flex; justify-content:center; margin-top:12px;">
+              <div class="primary-btn" style="pointer-events:none; width:auto; padding:10px 32px; font-size:16px; font-weight:600; background:var(--apple-indigo); color:white; border-radius:12px;">✓ 判定する</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="start-practice-btn" class="primary-btn" style="margin-top:24px; width:100%;">トレーニング開始！</button>
+        <button id="back-to-title-from-intro" class="secondary-btn" style="margin-top:12px; width:100%; border:none;">タイトルへ戻る</button>
       </div>
 
       <!-- 問題エリア -->
       <div id="problem-area" class="problem-area hidden">
-        <div class="stats-bar">
-          <div id="mode-name">基本モード</div>
-          <div id="score-display">Score: <span id="score-val" style="color:var(--apple-indigo);">0</span></div>
+        <div id="stats-container" class="stats-bar">
+          <!-- JSで動的に注入 -->
         </div>
 
         <div class="equation-container">
@@ -61,50 +210,72 @@
 
 
         <div class="input-area">
-          <!-- 解答形式の選択 -->
-          <div class="format-selector-wrapper">
-            <label for="format-select" style="font-size:13px; color:var(--apple-text-secondary); margin-bottom:8px; display:block; text-align:center;">解答の形式を選択</label>
-            <select id="format-select" class="format-select">
-              <option value="none" selected disabled>--- 形式を選択 ---</option>
-              <option value="single">x ≶ a (単独)</option>
-              <option value="compound">a ≶ x ≶ b (範囲)</option>
-            </select>
+          <div id="pattern-selector" class="pattern-selector">
+            <p style="font-size:13px; color:var(--apple-text-secondary); margin-bottom:12px; text-align:center;">解答の形式を選択してください</p>
+            <div class="pattern-buttons">
+              <button class="pattern-btn" data-format="single"><span class="math">x \lesseqgtr a</span></button>
+              <button class="pattern-btn" data-format="compound"><span class="math">a \lesseqgtr x \lesseqgtr b</span></button>
+            </div>
           </div>
-
+ 
           <div id="inputs-wrapper" class="hidden">
-            <div id="format-display-row" class="format-display-row">
-              <span id="selected-format-text" style="font-size:14px; color:var(--apple-text-secondary); font-weight:600;">解答形式: x ≶ a</span>
-              <button id="change-format-btn" class="change-format-link">形式を変更</button>
+            <div id="format-display-row" class="format-display-row" style="justify-content: center;">
+              <span id="selected-format-text" style="font-size:14px; color:var(--apple-text-secondary); font-weight:600;">解答形式: <span class="math">x \\lesseqgtr a</span></span>
             </div>
             <!-- 単一不等式の入力 -->
             <div id="single-input-row" class="inequality-input-row hidden">
-              <span style="font-family:serif; font-style:italic;">x</span>
+              <span class="math">x</span>
               <select id="sign-input" class="sign-select">
                 <option value="<">&lt;</option>
                 <option value=">">&gt;</option>
                 <option value="<=">≦</option>
                 <option value=">=">≧</option>
               </select>
-              <input type="number" id="val-input" class="val-input" step="any" placeholder="?">
+              <div class="value-input-container">
+                <input type="number" id="val-input" class="val-input" step="any" placeholder="?">
+                <div id="val-input-frac" class="fraction-input hidden">
+                  <input type="number" id="val-input-num" class="val-input" placeholder="分子">
+                  <div class="frac-line"></div>
+                  <input type="number" id="val-input-den" class="val-input" placeholder="分母">
+                </div>
+                <button type="button" class="toggle-frac-btn" data-target="val-input">分数</button>
+              </div>
             </div>
             
             <!-- 連立不等式の入力 -->
             <div id="compound-input-row" class="inequality-input-row hidden">
-              <input type="number" id="val-input-left" class="val-input" step="any" placeholder="?">
+              <div class="value-input-container">
+                <input type="number" id="val-input-left" class="val-input" step="any" placeholder="?">
+                <div id="val-input-left-frac" class="fraction-input hidden">
+                  <input type="number" id="val-input-left-num" class="val-input" placeholder="分子">
+                  <div class="frac-line"></div>
+                  <input type="number" id="val-input-left-den" class="val-input" placeholder="分母">
+                </div>
+                <button type="button" class="toggle-frac-btn" data-target="val-input-left">分数</button>
+              </div>
               <select id="sign-input-left" class="sign-select">
                 <option value="<">&lt;</option>
                 <option value="<=">≦</option>
               </select>
-              <span style="font-family:serif; font-style:italic;">x</span>
+              <span class="math">x</span>
               <select id="sign-input-right" class="sign-select">
                 <option value="<">&lt;</option>
                 <option value="<=">≦</option>
               </select>
-              <input type="number" id="val-input-right" class="val-input" step="any" placeholder="?">
+              <div class="value-input-container">
+                <input type="number" id="val-input-right" class="val-input" step="any" placeholder="?">
+                <div id="val-input-right-frac" class="fraction-input hidden">
+                  <input type="number" id="val-input-right-num" class="val-input" placeholder="分子">
+                  <div class="frac-line"></div>
+                  <input type="number" id="val-input-right-den" class="val-input" placeholder="分母">
+                </div>
+                <button type="button" class="toggle-frac-btn" data-target="val-input-right">分数</button>
+              </div>
             </div>
           </div>
 
           <button id="check-btn" class="primary-btn" style="width:100%; margin-top:10px;">判定する</button>
+          <button id="back-to-pattern-btn" class="secondary-btn hidden" style="width:100%; margin-top:12px; border-color:transparent; background:var(--apple-input-bg); color:var(--apple-text-secondary);">◀ 形式を選び直す</button>
         </div>
       </div>
       
