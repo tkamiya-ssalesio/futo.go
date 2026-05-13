@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Functions ---
 
     function updateStatsUI() {
-        const catName = currentCategory === 'single' ? '🔰 1次不等式' : '⚔️ 連立不等式';
+        const catName = currentCategory === 'single' ? '🔰 1次不等式' : '⚔️ 連立1次不等式';
         
         if (currentGameMode === 'practice') {
             statsContainer.innerHTML = `
@@ -527,18 +527,37 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentCategory === 'single') {
             const signs = ['<', '>', '<=', '>='];
             const isNegative = Math.random() > 0.4;
-            const a = isNegative ? -(Math.floor(Math.random() * 5) + 2) : (Math.floor(Math.random() * 5) + 2);
+            const hasRightX = Math.random() > 0.4; // 60% chance for polynomial on right side
             
-            // Ensure b is not 0
+            let a, c_val;
+            if (hasRightX) {
+                // ax + b < cx + d
+                a = (Math.floor(Math.random() * 8) + 2) * (Math.random() > 0.5 ? 1 : -1);
+                c_val = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                // Ensure a - c_val is not 0
+                while (a === c_val) {
+                    c_val = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                }
+            } else {
+                // ax + b < d
+                a = (Math.floor(Math.random() * 5) + 2) * (Math.random() > 0.5 ? 1 : -1);
+                c_val = 0;
+            }
+            
             let b = Math.floor(Math.random() * 9) + 1;
             if (Math.random() > 0.5) b = -b;
             
-            const c = Math.floor(Math.random() * 30) - 15;
+            let d = Math.floor(Math.random() * 30) - 15;
+            if (hasRightX && d === 0) d = Math.floor(Math.random() * 9) + 1; // Avoid 0 if it's a polynomial
             
             const sign = signs[Math.floor(Math.random() * signs.length)];
-            const targetFrac = simplifyFraction(c - b, a);
             
-            currentProblem = { a, b, c, sign, targetFrac, type: 'single' };
+            // Equation is ax + b < cx + d  => (a-c)x < d-b
+            const effectiveA = a - c_val;
+            const effectiveB = d - b;
+            const targetFrac = simplifyFraction(effectiveB, effectiveA);
+            
+            currentProblem = { a, b, c: c_val, d, sign, effectiveA, targetFrac, type: 'single' };
         } 
         else if (currentCategory === 'advanced') {
             const isSystem = Math.random() > 0.5;
@@ -596,10 +615,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderEquation() {
         let latex = '';
         if (currentProblem.type === 'single') {
-            latex = formatInequality(currentProblem.a, currentProblem.b, currentProblem.c, currentProblem.sign);
+            latex = formatInequality(currentProblem.a, currentProblem.b, currentProblem.c, currentProblem.d, currentProblem.sign);
         } else if (currentProblem.type === 'system') {
-            const eq1 = formatInequality(currentProblem.a1, currentProblem.b1, currentProblem.c1, currentProblem.sign1);
-            const eq2 = formatInequality(currentProblem.a2, currentProblem.b2, currentProblem.c2, currentProblem.sign2);
+            const eq1 = formatInequality(currentProblem.a1, currentProblem.b1, 0, currentProblem.c1, currentProblem.sign1);
+            const eq2 = formatInequality(currentProblem.a2, currentProblem.b2, 0, currentProblem.c2, currentProblem.sign2);
             latex = `\\begin{cases} ${eq1} \\\\ ${eq2} \\end{cases}`;
         } else if (currentProblem.type === 'compound') {
             const s1 = currentProblem.sign1.replace('<=', '\\leqq');
@@ -614,11 +633,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function formatInequality(a, b, c, sign) {
-        const aStr = a === 1 ? '' : (a === -1 ? '-' : a);
-        const bStr = b === 0 ? '' : (b > 0 ? `+${b}` : b);
+    function formatInequality(a, b, c, d, sign) {
+        // a x + b [sign] c x + d
+        const formatSide = (coeff, constVal) => {
+            let res = '';
+            if (coeff !== 0) {
+                const coeffStr = coeff === 1 ? '' : (coeff === -1 ? '-' : coeff);
+                res += `${coeffStr}x`;
+            }
+            if (constVal !== 0) {
+                const signStr = constVal > 0 ? (res ? '+' : '') : '';
+                res += `${signStr}${constVal}`;
+            }
+            if (!res) res = '0';
+            return res;
+        };
+
+        const left = formatSide(a, b);
+        const right = formatSide(c, d);
         const signStr = sign.replace('<=', '\\leqq').replace('>=', '\\geqq');
-        return `${aStr}x ${bStr} ${signStr} ${c}`;
+        return `${left} ${signStr} ${right}`;
     }
 
     function checkAnswer() {
@@ -650,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!userVal) return showFeedback('値を入力してください', 'error');
 
             let correctSign = currentProblem.sign;
-            if (currentProblem.a < 0) {
+            if (currentProblem.effectiveA < 0) {
                 const flip = {'<': '>', '>': '<', '<=': '>=', '>=': '<='};
                 correctSign = flip[currentProblem.sign];
             }
@@ -662,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isCorrect) {
                 success();
             } else {
-                fail(userSign !== correctSign && currentProblem.a < 0);
+                fail(userSign !== correctSign && currentProblem.effectiveA < 0);
             }
         } else {
             // System or Compound
