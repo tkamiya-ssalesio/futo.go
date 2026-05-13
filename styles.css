@@ -398,7 +398,7 @@ h1 {
 }
 .sign-select {
   background: var(--apple-input-bg);
-  border: none;
+  border: 1px solid var(--glass-border);
   padding: 12px 16px;
   border-radius: 12px;
   font-size: 24px;
@@ -408,6 +408,12 @@ h1 {
   appearance: none;
   text-align: center;
   min-width: 60px;
+  transition: all 0.2s;
+}
+.sign-select:focus {
+  outline: none;
+  background: #0f172a;
+  border-color: var(--theme-primary);
 }
 .val-input {
   width: 80px;
@@ -417,14 +423,15 @@ h1 {
   font-weight: 700;
   border: 1px solid var(--glass-border);
   border-radius: 14px;
-  background: var(--apple-card-bg);
+  background: var(--apple-input-bg);
   color: var(--apple-text-primary);
   transition: all 0.2s;
 }
 .val-input:focus {
   outline: none;
-  background: white;
-  box-shadow: 0 0 0 3px var(--apple-indigo);
+  background: #0f172a; /* Slate 900 for high contrast with Slate 50 text */
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
 /* --- Hybrid Fraction Input --- */
